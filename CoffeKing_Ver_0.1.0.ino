@@ -11,7 +11,11 @@
    instead of a bunch of if statements for legability and efficiency.
 */
 #include <Servo.h> //Adds the libraries for the servo
+#include "OneButton.h" //Add OneButton library
+
 Servo servo1;     //Servo for sugar dispenser
+OneButton userProfile1(A1, true);
+
 const int a = 8;  //For displaying segment "a"
 const int b = 9;  //For displaying segment "b"
 const int c = 4;  //For displaying segment "c"
@@ -35,6 +39,7 @@ int lastButtonState = 0;     // previous state of the button
 int decrementLastButtonState = 0;
 int startState = 0;
 int delayTime = 1;
+int userSetting;
 
 void setup() {
 
@@ -49,16 +54,22 @@ void setup() {
   pinMode(pump, OUTPUT); //for pump
 
   servo1.attach(13);
+  userProfile1.attachClick(singleclick); //A single click will be used to ;pad a user profile
+  userProfile1.attachLongPressStop(longclick); //A long click will set the user profile
+
   pinMode( buttonPin , INPUT_PULLUP );
   pinMode( decrementButtonPin, INPUT_PULLUP );
   pinMode( start, INPUT_PULLUP );
+
   Serial.begin(9600);
+
   displayDigit(buttonPushCounter);
-  pumpTime(delayTime);
+  pumpTime(buttonPushCounter);
 }
 
 void loop() {
-  //digitalWrite(pump, LOW);
+  userProfile1.tick();
+  delay(20);
   buttonState = digitalRead(buttonPin);
   decrementButtonState = digitalRead(decrementButtonPin);
   startState = digitalRead(start);
@@ -114,7 +125,7 @@ void pumpTime(int digit) {
     digitalWrite(pump, HIGH);
     delay(time);
     digitalWrite(pump, LOW);
-    for (int numOfSugar = 0; numOfSugar < digit; numOfSugar += 1)
+    for (int numOfSugar = 0; numOfSugar < digit; numOfSugar++)
     {
       servo1.write(180);
       delay(1000); // The delays have to be fairly long here
@@ -126,6 +137,23 @@ void pumpTime(int digit) {
     digitalWrite(stirMotor, LOW);
   }
 }
+
+void singleclick()
+{
+  //int userSetting=3; //I'm hard coding the user setting to 3 for now
+  buttonPushCounter=userSetting;
+  displayDigit(userSetting);
+  //pumpTime(userSetting);
+  
+  delay(10);
+}
+
+void longclick()
+{
+  userSetting=buttonPushCounter;
+  
+}
+
 
 void displayDigit(int digit)
 {
