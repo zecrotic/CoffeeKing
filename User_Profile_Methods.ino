@@ -2,8 +2,7 @@ void SingleClickForProfileOne()
 {
   buttonPushCounter = EEPROM.read(0);
   sugarButtonPushCounter = EEPROM.read(1);
-  displayDigit(userSettingOneForCream);
-  displaySugarDigit(userSettingOneForSugar);
+  turnOnLeds();
   delay(10);
 }
 
@@ -19,8 +18,7 @@ void SingleClickForProfileTwo()
 {
   buttonPushCounter = EEPROM.read(2);
   sugarButtonPushCounter = EEPROM.read(3);
-  displayDigit(userSettingTwoForCream);
-  displaySugarDigit(userSettingTwoForSugar);
+  turnOnLeds();
   delay(10);
 }
 
